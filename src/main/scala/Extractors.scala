@@ -115,7 +115,7 @@ trait JodaTimeToString extends Transformer {
   self: Transformer =>
   val format =  ISODateTimeFormat.dateTime()
   override def transform(value: Any)(implicit ctx: Context) = value match {
-    case dt: DateTime => dt.toString(format)
+    case dt: DateTime => dt.toString()
   }
 }
 
