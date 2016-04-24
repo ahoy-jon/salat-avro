@@ -100,12 +100,16 @@ object Extractors {
       case TypeRefType(_, symbol, _) if hint || Option(ctx.asInstanceOf[AvroContext].lookp(symbol.path)).isDefined =>
         Some(new Transformer(symbol.path, t)(ctx) {})
 
+    /*  case TypeRefType(_, symbol,_) if symbol.path == "java.util.UUID" =>
+        Some(new Transformer(symbol.path,t)(ctx) with UUIDTransformer)
+*/
       case _ => None
     }
 
     case _ => None
   }
 }
+
 
 trait JodaTimeToString extends Transformer {
   self: Transformer =>

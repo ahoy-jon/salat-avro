@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package com.banno.salat.avro
+
+import com.banno.salat.avro.DateSupport.{DateTimeAsIsoDate, IsoDateTimeLogicalTime}
 import com.novus.salat._
 import com.novus._
+import org.apache.avro.Conversions.UUIDConversion
 import scala.collection.mutable.ListBuffer
 import transformers._
 import scala.collection.JavaConversions._
@@ -61,13 +64,14 @@ object AvroSalatSchema {
         case (path, _, _) if isLong(path) => Schema.create(Schema.Type.LONG)
         case (path, _, _) if isDouble(path) => Schema.create(Schema.Type.DOUBLE) //ok to override Double & BigDecimal like this?
         case (path, _, _) if isBigDecimal(path) => Schema.create(Schema.Type.DOUBLE)
-        case (path, _, _) if isJodaDateTime(path) => Schema.create(Schema.Type.STRING)
+        case (path, _, _) if isJodaDateTime(path) => (new DateTimeAsIsoDate).getRecommendedSchema
         case ("com.github.nscala_time.time.TypeImports.DateTime", _, _) => Schema.create(Schema.Type.STRING)
         case ("scala.Option", _, _) => optional(schemaTypeFor(typeArgs(0), knownSchemas))
         case (_, IsTraversable(_), _) => Schema.createArray(schemaTypeFor(typeArgs(0), knownSchemas))
         case (_, IsMap(k, v), _) => Schema.createMap(schemaTypeFor(v, knownSchemas))
         case ("scala.Enumeration.Value", _, _) => Schema.create(Schema.Type.STRING)
         case (_, _, Some(recordGrater: AvroGrater[_])) => recordGrater.asSingleAvroSchema(knownSchemas)
+        case ("java.util.UUID",_,_) => (new UUIDConversion).getRecommendedSchema
         case (path, _, _) => throw new UnknownTypeForAvroSchema(path)
       }
     }

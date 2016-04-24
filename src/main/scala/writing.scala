@@ -16,6 +16,7 @@
 package com.banno.salat.avro
 
 import com.novus.salat._
+import org.apache.avro.Conversions.UUIDConversion
 import org.apache.avro.Schema
 import org.apache.avro.generic.{ GenericData, GenericDatumWriter }
 import org.apache.avro.util.Utf8
@@ -25,6 +26,10 @@ class AvroGenericDatumWriter[X](schema: Schema)(implicit ctx: Context) extends G
 }
 
 class AvroProductGenericData(implicit ctx: Context) extends GenericData {
+
+  this.addLogicalTypeConversion(new UUIDConversion)
+
+
   override def getField(record: Any, name: String, pos: Int): Object = {
     val caseClass = record.asInstanceOf[Product]
     val grater: SingleAvroGrater[_] = ctx.asInstanceOf[AvroContext].lookp(caseClass.getClass.getName).get.asInstanceOf[SingleAvroGrater[_]]

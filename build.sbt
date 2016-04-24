@@ -11,7 +11,7 @@ resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(
   "com.novus" %% "salat" % "1.9.9",
-  "org.apache.avro" % "avro" % "1.7.7",
+  "org.apache.avro" % "avro" % "1.8.0",
   "org.specs2" %% "specs2-core" % "2.4.15" % "test",
   "org.specs2" %% "specs2-matcher-extra" % "2.4.15" % "test"
 )

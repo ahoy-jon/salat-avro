@@ -16,6 +16,8 @@
 package com.banno.salat.avro
 
 
+import java.util.UUID
+
 import org.apache.avro.generic.GenericData
 import org.apache.avro.util.Utf8
 import scala.tools.scalap.scalax.rules.scalasig.{SingleType, TypeRefType }
@@ -106,7 +108,10 @@ object Injectors {
         Some(new Transformer(symbol.path, pt)(ctx) with StringToJodaDateTime) 
 
       case TypeRefType(_, symbol, _) if isJodaDateTime(symbol.path) => 
-        Some(new Transformer(symbol.path, pt)(ctx) with StringToJodaDateTime) 
+        Some(new Transformer(symbol.path, pt)(ctx) with StringToJodaDateTime)
+
+      case TypeRefType(_, symbol,_) if symbol.path == "java.util.UUID" =>
+        Some(new Transformer(symbol.path,pt)(ctx)with StringToUUID)
 
       case _ => None
     }
@@ -159,6 +164,13 @@ trait HashMapToMapInjector extends Transformer {
       Some(mapImpl(parentType, result))
   }
   val parentType: TypeRefType
+}
+
+trait StringToUUID extends Transformer {
+  self: Transformer =>
+  override def transform(value: Any)(implicit ctx: Context): Any = value match {
+    case str:String => UUID.fromString(str)
+  }
 }
 
 trait StringToJodaDateTime extends Transformer {

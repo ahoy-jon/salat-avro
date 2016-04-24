@@ -30,6 +30,9 @@ trait AvroDatumReader[X] extends DatumReader[X] {
 
 class AvroGenericDatumReader[X](schema: Schema)(implicit ctx: Context)
   extends GenericDatumReader[X](schema) with AvroDatumReader[X] {
+
+
+
   def read(decoder: Decoder): X = {
     val collectingGenericData = new CollectingGenericData
     val colletingReader = new CollectingGenericDatumReader(schema, collectingGenericData)
